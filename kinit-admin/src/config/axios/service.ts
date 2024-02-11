@@ -1,11 +1,15 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
-import { useAuthStoreWithOut } from '@/store/modules/auth'
+import { useStorage } from '@/hooks/web/useStorage'
+import { useAppStore } from '@/store/modules/app'
+import { useAuthStore } from '@/store/modules/auth'
 import qs from 'qs'
 import { config } from './config'
 import { ElMessage } from 'element-plus'
 import request from '@/config/axios'
 
 const { result_code, unauthorized_code, request_timeout } = config
+
+const { getStorage, setStorage } = useStorage()
 
 // 创建axios实例
 const service: AxiosInstance = axios.create({
@@ -17,10 +21,10 @@ const service: AxiosInstance = axios.create({
 // request拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const authStore = useAuthStoreWithOut()
-    const token = authStore.getToken
+    const appStore = useAppStore()
+    const token = getStorage(appStore.getToken)
     if (token !== '') {
-      ;(config.headers as any)[authStore.getTokenKey ?? 'Authorization'] = token // 让每个请求携带自定义token 请根据实际情况自行修改
+      ;(config.headers as any)['Authorization'] = token // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     if (
       config.method === 'post' &&
@@ -83,18 +87,18 @@ service.interceptors.response.use(
       if (refresh === '1') {
         // 因token快过期，刷新token
         refreshToken().then((res) => {
-          const authStore = useAuthStoreWithOut()
-          authStore.setToken(`${res.data.token_type} ${res.data.access_token}`)
-          authStore.setRefreshToken(res.data.refresh_token)
+          const appStore = useAppStore()
+          setStorage(appStore.getToken, `${res.data.token_type} ${res.data.access_token}`)
+          setStorage(appStore.getRefreshToken, res.data.refresh_token)
         })
       }
       return response.data
     } else if (code === unauthorized_code) {
       // 因token无效，token过期导致
       refreshToken().then((res) => {
-        const authStore = useAuthStoreWithOut()
-        authStore.setToken(`${res.data.token_type} ${res.data.access_token}`)
-        authStore.setRefreshToken(res.data.refresh_token)
+        const appStore = useAppStore()
+        setStorage(appStore.getToken, `${res.data.token_type} ${res.data.access_token}`)
+        setStorage(appStore.getRefreshToken, res.data.refresh_token)
         ElMessage.error('操作失败，请重试')
       })
     } else {
@@ -104,7 +108,7 @@ service.interceptors.response.use(
   (error: AxiosError) => {
     console.log('err', error)
     let { message } = error
-    const authStore = useAuthStoreWithOut()
+    const authStore = useAuthStore()
     const status = error.response?.status
     switch (status) {
       case 400:
@@ -154,8 +158,8 @@ service.interceptors.response.use(
 
 // 刷新Token
 const refreshToken = (): Promise<IResponse> => {
-  const authStore = useAuthStoreWithOut()
-  const data = authStore.getRefreshToken
+  const appStore = useAppStore()
+  const data = getStorage(appStore.getRefreshToken)
   return request.post({ url: '/auth/token/refresh', data })
 }
 

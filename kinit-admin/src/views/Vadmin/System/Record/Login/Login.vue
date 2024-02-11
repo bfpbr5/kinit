@@ -4,7 +4,7 @@ import { getRecordLoginListApi } from '@/api/vadmin/system/record/login'
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
-import { ElSwitch } from 'element-plus'
+import { ElButton, ElSwitch } from 'element-plus'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
@@ -12,7 +12,6 @@ import Detail from './components/Detail.vue'
 import { Dialog } from '@/components/Dialog'
 import { selectDictLabel, DictDetail } from '@/utils/dict'
 import { useDictStore } from '@/store/modules/dict'
-import { BaseButton } from '@/components/Button'
 
 defineOptions({
   name: 'SystemRecordLogin'
@@ -73,7 +72,7 @@ const tableColumns = reactive<TableColumn[]>([
       default: (data: any) => {
         return (
           <>
-            <ElSwitch modelValue={data.row.status} size="small" disabled />
+            <ElSwitch value={data.row.status} size="small" disabled />
           </>
         )
       }
@@ -169,9 +168,9 @@ const tableColumns = reactive<TableColumn[]>([
         const row = data.row
         return (
           <>
-            <BaseButton type="primary" link onClick={() => action(row, 'detail')}>
+            <ElButton type="primary" link onClick={() => action(row, 'detail')}>
               详情
-            </BaseButton>
+            </ElButton>
           </>
         )
       }
@@ -290,7 +289,7 @@ const action = (row: any, type: string) => {
     <Detail v-if="actionType === 'detail'" :current-row="currentRow" />
 
     <template #footer>
-      <BaseButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</BaseButton>
+      <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>
     </template>
   </Dialog>
 </template>

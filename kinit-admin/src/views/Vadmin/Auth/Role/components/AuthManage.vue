@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   ElDrawer,
+  ElButton,
   ElDivider,
   ElSelect,
   ElOption,
@@ -170,7 +171,7 @@ defineExpose({
           <div class="mt-1 text-[#909399]">
             <span>角色名称：{{ data.name }}</span>
           </div>
-          <BaseButton type="primary" :loading="loading" @click="submit">保存</BaseButton>
+          <ElButton type="primary" :loading="loading" @click="submit">保存</ElButton>
         </div>
         <ElDivider />
         <ElContainer>
@@ -191,7 +192,7 @@ defineExpose({
                     />
                   </ElSelect>
                   <div
-                    v-if="data.data_range === '3'"
+                    v-if="data.data_range === '4'"
                     class="mt-3 max-h-[65vh] b-1 b-solid b-[#e5e7eb] p-10px overflow-auto"
                   >
                     <ElTree

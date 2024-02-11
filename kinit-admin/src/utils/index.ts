@@ -1,3 +1,5 @@
+// import type { Plugin } from 'vue'
+
 /**
  *
  * @param component 需要注册的组件
@@ -43,10 +45,6 @@ export const humpToDash = (str: string): string => {
 
 export const setCssVar = (prop: string, val: any, dom = document.documentElement) => {
   dom.style.setProperty(prop, val)
-}
-
-export const getCssVar = (prop: string, dom = document.documentElement) => {
-  return getComputedStyle(dom).getPropertyValue(prop)
 }
 
 /**
@@ -123,17 +121,6 @@ export function toAnyString() {
  */
 export function firstUpperCase(str: string) {
   return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
-}
-
-/**
- * 把对象转为formData
- */
-export function objToFormData(obj: Recordable) {
-  const formData = new FormData()
-  Object.keys(obj).forEach((key) => {
-    formData.append(key, obj[key])
-  })
-  return formData
 }
 
 // 根据当前时间获取祝福语

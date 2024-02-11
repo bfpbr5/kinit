@@ -2,18 +2,18 @@
 import { reactive, ref, watch } from 'vue'
 import { Form } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElCheckbox, ElLink } from 'element-plus'
+import { ElButton, ElCheckbox, ElLink } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
 import { getRoleMenusApi } from '@/api/login'
-import { useAuthStore } from '@/store/modules/auth'
+import { useAuthStoreWithOut } from '@/store/modules/auth'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
 import { UserLoginType } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
+import { useStorage } from '@/hooks/web/useStorage'
 import { FormSchema } from '@/components/Form'
 import { Icon } from '@/components/Icon'
-import { BaseButton } from '@/components/Button'
 
 const emit = defineEmits(['to-telephone'])
 
@@ -21,9 +21,10 @@ const { required } = useValidator()
 
 const permissionStore = usePermissionStore()
 
-const authStore = useAuthStore()
+const authStore = useAuthStoreWithOut()
 
 const { currentRoute, addRoute, push } = useRouter()
+const { setStorage } = useStorage()
 
 const { t } = useI18n()
 
@@ -121,19 +122,14 @@ const schema = reactive<FormSchema[]>([
           return (
             <>
               <div class="w-[100%]">
-                <BaseButton
-                  loading={loading.value}
-                  type="primary"
-                  class="w-[100%]"
-                  onClick={signIn}
-                >
+                <ElButton loading={loading.value} type="primary" class="w-[100%]" onClick={signIn}>
                   {t('login.login')}
-                </BaseButton>
+                </ElButton>
               </div>
               <div class="w-[100%] mt-15px">
-                <BaseButton class="w-[100%]" onClick={toTelephoneLogin}>
+                <ElButton class="w-[100%]" onClick={toTelephoneLogin}>
                   {t('login.smsLogin')}
-                </BaseButton>
+                </ElButton>
               </div>
             </>
           )
@@ -245,6 +241,7 @@ const getMenu = async () => {
   const res = await getRoleMenusApi()
   if (res) {
     const routers = res.data || []
+    setStorage('roleRouters', routers)
     await permissionStore.generateRoutes(routers).catch(() => {})
     permissionStore.getAddRouters.forEach((route) => {
       addRoute(route as RouteRecordRaw) // 动态添加可访问路由表

@@ -25,7 +25,6 @@ import { Editor } from '@/components/Editor'
 import { Text } from '@/components/Text'
 import { JsonEditor } from '@/components/JsonEditor'
 import { ComponentName } from '../types'
-import { IconPicker } from '@/components/IconPicker'
 
 const componentMap: Recordable<Component, ComponentName> = {
   RadioGroup: ElRadioGroup,
@@ -52,7 +51,6 @@ const componentMap: Recordable<Component, ComponentName> = {
   TreeSelect: ElTreeSelect,
   Upload: ElUpload,
   JsonEditor: JsonEditor,
-  IconPicker: IconPicker,
   Text: Text
 }
 

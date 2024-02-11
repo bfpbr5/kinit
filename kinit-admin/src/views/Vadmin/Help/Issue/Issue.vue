@@ -3,14 +3,13 @@ import { reactive, ref, unref } from 'vue'
 import { getIssueListApi, delIssueListApi } from '@/api/vadmin/help/issue'
 import { useTable } from '@/hooks/web/useTable'
 import { Table, TableColumn } from '@/components/Table'
-import { ElSwitch, ElRow, ElCol } from 'element-plus'
+import { ElButton, ElSwitch, ElRow, ElCol } from 'element-plus'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
 import { useDictStore } from '@/store/modules/dict'
 import { DictDetail } from '@/utils/dict'
 import { useRouter } from 'vue-router'
-import { BaseButton } from '@/components/Button'
 
 defineOptions({
   name: 'HelpIssue'
@@ -86,7 +85,7 @@ const tableColumns = reactive<TableColumn[]>([
         const row = data.row
         return (
           <>
-            <ElSwitch modelValue={row.is_active} disabled />
+            <ElSwitch value={row.is_active} disabled />
           </>
         )
       }
@@ -115,10 +114,10 @@ const tableColumns = reactive<TableColumn[]>([
         const row = data.row
         return (
           <>
-            <BaseButton type="primary" link size="small" onClick={() => editAction(row)}>
+            <ElButton type="primary" link size="small" onClick={() => editAction(row)}>
               编辑
-            </BaseButton>
-            <BaseButton
+            </ElButton>
+            <ElButton
               type="danger"
               loading={delLoading.value}
               link
@@ -126,7 +125,7 @@ const tableColumns = reactive<TableColumn[]>([
               onClick={() => delData(row)}
             >
               删除
-            </BaseButton>
+            </ElButton>
           </>
         )
       }
@@ -225,7 +224,7 @@ const addAction = () => {
       <template #toolbar>
         <ElRow :gutter="10">
           <ElCol :span="1.5">
-            <BaseButton type="primary" @click="addAction">新增常见问题</BaseButton>
+            <ElButton type="primary" @click="addAction">新增常见问题</ElButton>
           </ElCol>
         </ElRow>
       </template>

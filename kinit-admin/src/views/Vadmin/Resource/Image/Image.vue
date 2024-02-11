@@ -4,14 +4,13 @@ import { addImagesApi, getImagesListApi, delImagesListApi } from '@/api/vadmin/r
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
-import { ElMessage, ElRow, ElCol, ElImage } from 'element-plus'
+import { ElButton, ElMessage, ElRow, ElCol, ElImage } from 'element-plus'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
 import Write from './components/Write.vue'
 import { Dialog } from '@/components/Dialog'
 import { useClipboard } from '@vueuse/core'
-import { BaseButton } from '@/components/Button'
 
 defineOptions({
   name: 'ResourceImage'
@@ -124,13 +123,13 @@ const tableColumns = reactive<TableColumn[]>([
         const row = data.row
         return (
           <>
-            <BaseButton type="primary" link size="small" onClick={() => toCopy(row.id)}>
+            <ElButton type="primary" link size="small" onClick={() => toCopy(row.id)}>
               复制编号
-            </BaseButton>
-            <BaseButton type="primary" link size="small" onClick={() => toCopy(row.image_url)}>
+            </ElButton>
+            <ElButton type="primary" link size="small" onClick={() => toCopy(row.image_url)}>
               复制链接
-            </BaseButton>
-            <BaseButton
+            </ElButton>
+            <ElButton
               type="danger"
               loading={delLoading.value}
               link
@@ -138,7 +137,7 @@ const tableColumns = reactive<TableColumn[]>([
               onClick={() => delData(row)}
             >
               删除
-            </BaseButton>
+            </ElButton>
           </>
         )
       }
@@ -260,8 +259,8 @@ const save = async () => {
       <template #toolbar>
         <ElRow :gutter="10">
           <ElCol :span="1.5">
-            <BaseButton type="primary" @click="addAction">新增图片素材</BaseButton>
-            <BaseButton type="danger" @click="delData(null)">批量删除</BaseButton>
+            <ElButton type="primary" @click="addAction">新增图片素材</ElButton>
+            <ElButton type="danger" @click="delData(null)">批量删除</ElButton>
           </ElCol>
         </ElRow>
       </template>
@@ -272,10 +271,10 @@ const save = async () => {
     <Write ref="writeRef" :current-row="currentRow" />
 
     <template #footer>
-      <BaseButton type="primary" :loading="saveLoading" @click="save">
+      <ElButton type="primary" :loading="saveLoading" @click="save">
         {{ t('exampleDemo.save') }}
-      </BaseButton>
-      <BaseButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</BaseButton>
+      </ElButton>
+      <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>
     </template>
   </Dialog>
 </template>

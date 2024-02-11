@@ -11,7 +11,7 @@ import {
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
-import { ElSwitch, ElRow, ElCol, ElMessage } from 'element-plus'
+import { ElButton, ElSwitch, ElRow, ElCol, ElMessage } from 'element-plus'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
@@ -22,7 +22,6 @@ import { useDictStore } from '@/store/modules/dict'
 import Import from './components/Import.vue'
 import PasswordSendSMS from './components/PasswordSendSMS.vue'
 import PasswordSendEmail from './components/PasswordSendEmail.vue'
-import { BaseButton } from '@/components/Button'
 
 defineOptions({
   name: 'AuthUser'
@@ -165,7 +164,7 @@ const tableColumns = reactive<TableColumn[]>([
         const row = data.row
         return (
           <>
-            <ElSwitch modelValue={row.is_active} disabled />
+            <ElSwitch value={row.is_active} disabled />
           </>
         )
       }
@@ -180,7 +179,7 @@ const tableColumns = reactive<TableColumn[]>([
         const row = data.row
         return (
           <>
-            <ElSwitch modelValue={row.is_staff} disabled />
+            <ElSwitch value={row.is_staff} disabled />
           </>
         )
       }
@@ -210,7 +209,7 @@ const tableColumns = reactive<TableColumn[]>([
         const del = ['auth.user.delete']
         return (
           <>
-            <BaseButton
+            <ElButton
               type="primary"
               v-hasPermi={update}
               link
@@ -218,8 +217,8 @@ const tableColumns = reactive<TableColumn[]>([
               onClick={() => editAction(row)}
             >
               编辑
-            </BaseButton>
-            <BaseButton
+            </ElButton>
+            <ElButton
               type="danger"
               v-hasPermi={del}
               loading={delLoading.value}
@@ -228,7 +227,7 @@ const tableColumns = reactive<TableColumn[]>([
               onClick={() => delData(row)}
             >
               删除
-            </BaseButton>
+            </ElButton>
           </>
         )
       }
@@ -439,22 +438,22 @@ const save = async () => {
       <template #toolbar>
         <ElRow :gutter="10">
           <ElCol :span="1.5" v-hasPermi="['auth.user.create']">
-            <BaseButton type="primary" @click="addAction">新增用户</BaseButton>
+            <ElButton type="primary" @click="addAction">新增用户</ElButton>
           </ElCol>
           <ElCol :span="1.5" v-hasPermi="['auth.user.import']">
-            <BaseButton @click="importList">批量导入用户</BaseButton>
+            <ElButton @click="importList">批量导入用户</ElButton>
           </ElCol>
           <ElCol :span="1.5" v-hasPermi="['auth.user.export']">
-            <BaseButton @click="exportQueryList()">导出筛选用户</BaseButton>
+            <ElButton @click="exportQueryList()">导出筛选用户</ElButton>
           </ElCol>
           <ElCol :span="1.5" v-hasPermi="['auth.user.reset']">
-            <BaseButton @click="sendPasswordToSMS">重置密码通知短信</BaseButton>
+            <ElButton @click="sendPasswordToSMS">重置密码通知短信</ElButton>
           </ElCol>
           <ElCol :span="1.5" v-hasPermi="['auth.user.reset']">
-            <BaseButton @click="sendPasswordToEmail">重置密码通知邮件</BaseButton>
+            <ElButton @click="sendPasswordToEmail">重置密码通知邮件</ElButton>
           </ElCol>
           <ElCol :span="1.5" v-hasPermi="['auth.user.delete']">
-            <BaseButton type="danger" @click="delData(null)">批量删除</BaseButton>
+            <ElButton type="danger" @click="delData(null)">批量删除</ElButton>
           </ElCol>
         </ElRow>
       </template>
@@ -488,10 +487,10 @@ const save = async () => {
     />
 
     <template #footer v-if="actionType === 'add' || actionType === 'edit'">
-      <BaseButton type="primary" :loading="saveLoading" @click="save">
+      <ElButton type="primary" :loading="saveLoading" @click="save">
         {{ t('exampleDemo.save') }}
-      </BaseButton>
-      <BaseButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</BaseButton>
+      </ElButton>
+      <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>
     </template>
   </Dialog>
 </template>

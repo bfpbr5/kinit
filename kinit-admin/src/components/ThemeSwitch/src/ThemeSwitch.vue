@@ -9,8 +9,6 @@ const { getPrefixCls } = useDesign()
 
 const prefixCls = getPrefixCls('theme-switch')
 
-const emit = defineEmits(['change'])
-
 const Sun = useIcon({ icon: 'emojione-monotone:sun', color: '#fde047' })
 
 const CrescentMoon = useIcon({ icon: 'emojione-monotone:crescent-moon', color: '#fde047' })
@@ -25,7 +23,6 @@ const blackColor = 'var(--el-color-black)'
 
 const themeChange = (val: boolean) => {
   appStore.setIsDark(val)
-  emit('change', val)
 }
 </script>
 

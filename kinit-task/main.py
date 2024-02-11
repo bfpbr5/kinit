@@ -10,7 +10,6 @@ from application.settings import MONGO_DB_NAME, MONGO_DB_URL, REDIS_DB_URL, SUBS
     SCHEDULER_TASK_RECORD
 from core.redis import get_database as get_redis
 from core.logger import logger
-from core.redis.redis_manage import RedisManage
 
 
 class ScheduledTask:
@@ -29,6 +28,7 @@ class ScheduledTask:
     def add_job(self, exec_strategy: str, job_params: dict) -> None:
         """
         添加定时任务
+
         :param exec_strategy: 执行策略
         :param job_params: 执行参数
         :return:
@@ -61,6 +61,7 @@ class ScheduledTask:
     def error_record(self, name: str, error_info: str) -> None:
         """
         添加任务失败记录，并且将任务状态改为 False
+
         :param name: 任务编号
         :param error_info: 报错信息
         :return:
@@ -90,13 +91,12 @@ class ScheduledTask:
     def run(self) -> None:
         """
         启动监听订阅消息（阻塞）
+
         :return:
         """
         self.start_mongo()
         self.start_scheduler()
         self.start_redis()
-
-        assert isinstance(self.rd, RedisManage)
 
         pubsub = self.rd.subscribe(SUBSCRIBE)
 
@@ -119,40 +119,44 @@ class ScheduledTask:
     def start_mongo(self) -> None:
         """
         启动 mongo
+
         :return:
         """
         self.mongo = get_mongo()
         self.mongo.connect_to_database(MONGO_DB_URL, MONGO_DB_NAME)
+        print("成功连接 MongoDB")
 
     def start_scheduler(self) -> None:
         """
         启动定时任务
+
         :return:
         """
         self.scheduler = Scheduler()
         self.scheduler.start()
-        print("Scheduler 启动成功")
+        print("成功启动 Scheduler")
 
     def start_redis(self) -> None:
         """
         启动 redis
+
         :return:
         """
         self.rd = get_redis()
         self.rd.connect_to_database(REDIS_DB_URL)
+        print("成功连接 Redis")
 
     def close(self) -> None:
         """
         # pycharm 执行停止，该函数无法正常被执行，怀疑是因为阻塞导致或 pycharm 的强制退出导致
         # 报错导致得退出，会被执行
         关闭程序
+
         :return:
         """
         self.mongo.close_database_connection()
-        if self.scheduler:
-            self.scheduler.shutdown()
-        if self.rd:
-            self.rd.close_database_connection()
+        self.scheduler.shutdown()
+        self.rd.close_database_connection()
 
 
 if __name__ == '__main__':

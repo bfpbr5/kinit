@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElButton } from 'element-plus'
 import { getSystemSettingsApi, putSystemSettingsApi } from '@/api/vadmin/system/settings'
 import { propTypes } from '@/utils/propTypes'
 import { Editor, EditorExpose } from '@/components/Editor'
@@ -72,7 +73,7 @@ getData()
     :editorConfig="editorConfig"
   />
   <div class="mt-10px" style="float: right">
-    <BaseButton :loading="loading" type="primary" @click="save">立即保存</BaseButton>
+    <ElButton :loading="loading" type="primary" @click="save">立即保存</ElButton>
   </div>
 </template>
 

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { store } from '../index'
 import { UserLoginType } from '@/api/login/types'
 import { loginApi } from '@/api/login'
+import { useAppStore } from '@/store/modules/app'
 import { useStorage } from '@/hooks/web/useStorage'
 import { getCurrentAdminUserInfo } from '@/api/vadmin/auth/user'
 import { resetRouter } from '@/router'
@@ -9,7 +10,7 @@ import { useTagsViewStore } from '@/store/modules/tagsView'
 import router from '@/router'
 import { ElMessage } from 'element-plus'
 
-const { clear } = useStorage()
+const { setStorage, clear } = useStorage()
 
 export interface UserState {
   id?: number
@@ -31,9 +32,6 @@ export interface AuthState {
   isUser: boolean // 是否已经登录并获取到用户信息
   roles: string[] // 当前用户角色 role_key 列表
   permissions: string[] // 当前用户权限列表
-  tokenKey: string // 提交认证请求时，设置的 header key
-  token: string // 认证 token
-  refreshToken: string // 刷新 token
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -42,22 +40,10 @@ export const useAuthStore = defineStore('auth', {
       user: {},
       roles: [],
       permissions: [],
-      isUser: false,
-      tokenKey: 'Authorization',
-      token: '',
-      refreshToken: ''
+      isUser: false
     }
   },
   getters: {
-    getTokenKey(): string {
-      return this.tokenKey
-    },
-    getToken(): string {
-      return this.token
-    },
-    getRefreshToken(): string {
-      return this.refreshToken
-    },
     getUser(): UserState {
       return this.user
     },
@@ -72,34 +58,24 @@ export const useAuthStore = defineStore('auth', {
     }
   },
   actions: {
-    setToken(token: string) {
-      this.token = token
-    },
-    setRefreshToken(refreshToken: string) {
-      this.refreshToken = refreshToken
-    },
     async login(formData: UserLoginType) {
       formData.platform = '0'
       const res = await loginApi(formData)
       if (res) {
-        this.token = `${res.data.token_type} ${res.data.access_token}`
-        this.refreshToken = res.data.refresh_token
+        const appStore = useAppStore()
+        setStorage(appStore.getToken, `${res.data.token_type} ${res.data.access_token}`)
+        setStorage(appStore.getRefreshToken, res.data.refresh_token)
         // 获取当前登录用户的信息
         await this.setUserInfo()
       }
       return res
     },
-    reset() {
+    logout(message?: string) {
+      clear()
       this.user = {}
       this.roles = []
       this.permissions = []
       this.isUser = false
-      this.token = ''
-      this.refreshToken = ''
-    },
-    logout(message?: string) {
-      clear()
-      this.reset()
       const tagsViewStore = useTagsViewStore()
       tagsViewStore.delAllViews()
       resetRouter()
@@ -129,8 +105,7 @@ export const useAuthStore = defineStore('auth', {
       })
       this.permissions = res.data.permissions
     }
-  },
-  persist: true
+  }
 })
 
 export const useAuthStoreWithOut = () => {

@@ -3,14 +3,13 @@ import { Form, FormSchema } from '@/components/Form'
 import { useForm } from '@/hooks/web/useForm'
 import { reactive, ref } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
-import { useAuthStore } from '@/store/modules/auth'
-import { ElMessage } from 'element-plus'
+import { useAuthStoreWithOut } from '@/store/modules/auth'
+import { ElButton, ElMessage } from 'element-plus'
 import { postCurrentUserResetPassword } from '@/api/vadmin/auth/user'
-import { BaseButton } from '@/components/Button'
 
 const { required } = useValidator()
 
-const authStore = useAuthStore()
+const authStore = useAuthStoreWithOut()
 
 const formSchema = reactive<FormSchema[]>([
   {
@@ -58,9 +57,9 @@ const formSchema = reactive<FormSchema[]>([
           return (
             <>
               <div class="w-[50%]">
-                <BaseButton loading={loading.value} type="primary" class="w-[100%]" onClick={save}>
+                <ElButton loading={loading.value} type="primary" class="w-[100%]" onClick={save}>
                   保存
-                </BaseButton>
+                </ElButton>
               </div>
             </>
           )
@@ -91,7 +90,7 @@ const loading = ref(false)
 // 提交
 const save = async () => {
   if (authStore.getUser.id === 1) {
-    return ElMessage.warning('编辑账号为演示账号，无权限操作！')
+    // return ElMessage.warning('编辑账号为演示账号，无权限操作！')
   }
   const elForm = await getElFormExpose()
   const valid = await elForm?.validate()

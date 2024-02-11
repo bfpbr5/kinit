@@ -1,5 +1,6 @@
-import { hasRoute } from './router'
 import router from './router'
+import { useAppStoreWithOut } from '@/store/modules/app'
+import { useStorage } from '@/hooks/web/useStorage'
 import type { RouteRecordRaw } from 'vue-router'
 import { useTitle } from '@/hooks/web/useTitle'
 import { useNProgress } from '@/hooks/web/useNProgress'
@@ -7,6 +8,13 @@ import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { usePageLoading } from '@/hooks/web/usePageLoading'
 import { useAuthStoreWithOut } from '@/store/modules/auth'
 import { getRoleMenusApi } from '@/api/login'
+
+const permissionStore = usePermissionStoreWithOut()
+
+const appStore = useAppStoreWithOut()
+const authStore = useAuthStoreWithOut()
+
+const { getStorage, setStorage } = useStorage()
 
 const { start, done } = useNProgress()
 
@@ -17,10 +25,7 @@ const whiteList = ['/login'] // 不重定向白名单
 router.beforeEach(async (to, from, next) => {
   start()
   loadStart()
-  const permissionStore = usePermissionStoreWithOut()
-  const authStore = useAuthStoreWithOut()
-
-  if (authStore.getToken) {
+  if (getStorage(appStore.getToken)) {
     if (to.path === '/login') {
       next({ path: '/' })
     } else if (to.path === '/reset/password') {
@@ -30,9 +35,6 @@ router.beforeEach(async (to, from, next) => {
         await authStore.setUserInfo()
       }
       if (permissionStore.getIsAddRouters) {
-        if (!hasRoute(to.path)) {
-          authStore.logout('认证已过期，请重新登录！')
-        }
         next()
         return
       }
@@ -40,6 +42,7 @@ router.beforeEach(async (to, from, next) => {
       // 开发者可根据实际情况进行修改
       const res = await getRoleMenusApi()
       const routers = res.data || []
+      setStorage('roleRouters', routers)
       await permissionStore.generateRoutes(routers).catch(() => {})
       permissionStore.getAddRouters.forEach((route) => {
         router.addRoute(route as RouteRecordRaw) // 动态添加可访问路由表

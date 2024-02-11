@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ElDrawer, ElDivider, ElMessage } from 'element-plus'
-import { ref, unref } from 'vue'
+import { ElDrawer, ElDivider, ElButton, ElMessage } from 'element-plus'
+import { ref, unref, computed, watch } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ThemeSwitch } from '@/components/ThemeSwitch'
+import { colorIsDark, lighten, hexToRGB } from '@/utils/color'
 import { useCssVar } from '@vueuse/core'
 import { useAppStore } from '@/store/modules/app'
-import { trim, setCssVar, getCssVar } from '@/utils'
+import { trim, setCssVar } from '@/utils'
 import ColorRadioPicker from './components/ColorRadioPicker.vue'
 import InterfaceDisplay from './components/InterfaceDisplay.vue'
 import LayoutRadioPicker from './components/LayoutRadioPicker.vue'
@@ -13,7 +14,7 @@ import { useStorage } from '@/hooks/web/useStorage'
 import { useClipboard } from '@vueuse/core'
 import { useDesign } from '@/hooks/web/useDesign'
 
-const { clear: storageClear } = useStorage('localStorage')
+const { removeStorage } = useStorage()
 
 const { getPrefixCls } = useDesign()
 
@@ -22,6 +23,8 @@ const prefixCls = getPrefixCls('setting')
 const appStore = useAppStore()
 
 const { t } = useI18n()
+
+const layout = computed(() => appStore.getLayout)
 
 const drawer = ref(false)
 
@@ -39,27 +42,70 @@ const setSystemTheme = (color: string) => {
 const headerTheme = ref(appStore.getTheme.topHeaderBgColor || '')
 
 const setHeaderTheme = (color: string) => {
-  appStore.setHeaderTheme(color)
+  const isDarkColor = colorIsDark(color)
+  const textColor = isDarkColor ? '#fff' : 'inherit'
+  const textHoverColor = isDarkColor ? lighten(color!, 6) : '#f6f6f6'
+  const topToolBorderColor = isDarkColor ? color : '#eee'
+  setCssVar('--top-header-bg-color', color)
+  setCssVar('--top-header-text-color', textColor)
+  setCssVar('--top-header-hover-color', textHoverColor)
+  appStore.setTheme({
+    topHeaderBgColor: color,
+    topHeaderTextColor: textColor,
+    topHeaderHoverColor: textHoverColor,
+    topToolBorderColor
+  })
+  if (unref(layout) === 'top') {
+    setMenuTheme(color)
+  }
 }
 
 // 菜单主题相关
 const menuTheme = ref(appStore.getTheme.leftMenuBgColor || '')
 
 const setMenuTheme = (color: string) => {
-  appStore.setMenuTheme(color)
+  const primaryColor = useCssVar('--el-color-primary', document.documentElement)
+  const isDarkColor = colorIsDark(color)
+  const theme: Recordable = {
+    // 左侧菜单边框颜色
+    leftMenuBorderColor: isDarkColor ? 'inherit' : '#eee',
+    // 左侧菜单背景颜色
+    leftMenuBgColor: color,
+    // 左侧菜单浅色背景颜色
+    leftMenuBgLightColor: isDarkColor ? lighten(color!, 6) : color,
+    // 左侧菜单选中背景颜色
+    leftMenuBgActiveColor: isDarkColor
+      ? 'var(--el-color-primary)'
+      : hexToRGB(unref(primaryColor), 0.1),
+    // 左侧菜单收起选中背景颜色
+    leftMenuCollapseBgActiveColor: isDarkColor
+      ? 'var(--el-color-primary)'
+      : hexToRGB(unref(primaryColor), 0.1),
+    // 左侧菜单字体颜色
+    leftMenuTextColor: isDarkColor ? '#bfcbd9' : '#333',
+    // 左侧菜单选中字体颜色
+    leftMenuTextActiveColor: isDarkColor ? '#fff' : 'var(--el-color-primary)',
+    // logo字体颜色
+    logoTitleTextColor: isDarkColor ? '#fff' : 'inherit',
+    // logo边框颜色
+    logoBorderColor: isDarkColor ? color : '#eee'
+  }
+  appStore.setTheme(theme)
+  appStore.setCssVarTheme()
 }
 
-// watch(
-//   () => layout.value,
-//   (n) => {
-//     if (n === 'top' && !appStore.getIsDark) {
-//       headerTheme.value = '#fff'
-//       setHeaderTheme('#fff')
-//     } else {
-//       setMenuTheme(unref(menuTheme))
-//     }
-//   }
-// )
+// 监听layout变化，重置一些主题色
+watch(
+  () => layout.value,
+  (n) => {
+    if (n === 'top' && !appStore.getIsDark) {
+      headerTheme.value = '#fff'
+      setHeaderTheme('#fff')
+    } else {
+      setMenuTheme(unref(menuTheme))
+    }
+  }
+)
 
 // 拷贝
 const copyConfig = async () => {
@@ -128,8 +174,7 @@ const copyConfig = async () => {
         // 头部边框颜色
         topToolBorderColor: '${appStore.getTheme.topToolBorderColor}'
       }
-    `,
-    legacy: true
+    `
   })
   if (!isSupported) {
     ElMessage.error(t('setting.copyFailed'))
@@ -143,14 +188,10 @@ const copyConfig = async () => {
 
 // 清空缓存
 const clear = () => {
-  storageClear()
+  removeStorage('layout')
+  removeStorage('theme')
+  removeStorage('isDark')
   window.location.reload()
-}
-
-const themeChange = () => {
-  const color = getCssVar('--el-bg-color')
-  setMenuTheme(color)
-  setHeaderTheme(color)
 }
 </script>
 
@@ -171,7 +212,7 @@ const themeChange = () => {
     <div class="text-center">
       <!-- 主题 -->
       <ElDivider>{{ t('setting.theme') }}</ElDivider>
-      <ThemeSwitch @change="themeChange" />
+      <ThemeSwitch />
 
       <!-- 布局 -->
       <ElDivider>{{ t('setting.layout') }}</ElDivider>
@@ -212,21 +253,23 @@ const themeChange = () => {
       />
 
       <!-- 菜单主题 -->
-      <ElDivider>{{ t('setting.menuTheme') }}</ElDivider>
-      <ColorRadioPicker
-        v-model="menuTheme"
-        :schema="[
-          '#fff',
-          '#001529',
-          '#212121',
-          '#273352',
-          '#191b24',
-          '#383f45',
-          '#001628',
-          '#344058'
-        ]"
-        @change="setMenuTheme"
-      />
+      <template v-if="layout !== 'top'">
+        <ElDivider>{{ t('setting.menuTheme') }}</ElDivider>
+        <ColorRadioPicker
+          v-model="menuTheme"
+          :schema="[
+            '#fff',
+            '#001529',
+            '#212121',
+            '#273352',
+            '#191b24',
+            '#383f45',
+            '#001628',
+            '#344058'
+          ]"
+          @change="setMenuTheme"
+        />
+      </template>
     </div>
 
     <!-- 界面显示 -->
@@ -235,14 +278,12 @@ const themeChange = () => {
 
     <ElDivider />
     <div>
-      <BaseButton type="primary" class="w-full" @click="copyConfig">{{
-        t('setting.copy')
-      }}</BaseButton>
+      <ElButton type="primary" class="w-full" @click="copyConfig">{{ t('setting.copy') }}</ElButton>
     </div>
     <div class="mt-5px">
-      <BaseButton type="danger" class="w-full" @click="clear">
+      <ElButton type="danger" class="w-full" @click="clear">
         {{ t('setting.clearAndReset') }}
-      </BaseButton>
+      </ElButton>
     </div>
   </ElDrawer>
 </template>

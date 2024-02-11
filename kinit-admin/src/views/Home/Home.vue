@@ -3,14 +3,14 @@ import { ElCard, ElRow, ElCol, ElTabs, ElTabPane, ElAvatar } from 'element-plus'
 import { computed, ref } from 'vue'
 import InfoWrite from './components/InfoWrite.vue'
 import PasswordWrite from './components/PasswordWrite.vue'
-import { useAuthStore } from '@/store/modules/auth'
+import { useAuthStoreWithOut } from '@/store/modules/auth'
 import avatar from '@/assets/imgs/avatar.jpg'
 import { selectDictLabel, DictDetail } from '@/utils/dict'
 import { useDictStore } from '@/store/modules/dict'
 
 const activeName = ref('info')
 
-const authStore = useAuthStore()
+const authStore = useAuthStoreWithOut()
 
 let genderOptions = ref<DictDetail[]>([])
 

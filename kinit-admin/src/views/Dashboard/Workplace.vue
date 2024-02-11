@@ -122,8 +122,9 @@ const user = computed(() => authStore.getUser)
         <ElCol :xl="16" :lg="16" :md="24" :sm="24" :xs="24" class="mb-20px">
           <ElCard shadow="never">
             <template #header>
+              <span>{{ t('workplace.project') }}</span>
               <div class="flex justify-between">
-                <span>{{ t('workplace.project') }}</span>
+                <ElLink type="primary" :underline="false">{{ t('workplace.add') }}</ElLink>
                 <ElLink type="primary" :underline="false">{{ t('workplace.more') }}</ElLink>
               </div>
             </template>

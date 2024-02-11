@@ -88,9 +88,6 @@ const newSchema = computed(() => {
                   />
                 </div>
               )
-            },
-            label: () => {
-              return <span>&nbsp;</span>
             }
           }
         }
@@ -120,14 +117,11 @@ const setProps = (props: SearchProps = {}) => {
   outsideProps.value = props
 }
 
-const schemaRef = ref<FormSchema[]>([])
-
 // 监听表单结构化数组，重新生成formModel
 watch(
   () => unref(newSchema),
   async (schema = []) => {
     formModel.value = initModel(schema, unref(formModel))
-    schemaRef.value = schema
   },
   {
     immediate: true,
@@ -247,7 +241,7 @@ const onFormValidate = (prop: FormItemProp, isValid: boolean, message: string) =
     hide-required-asterisk
     :inline="getProps.inline"
     :is-col="getProps.isCol"
-    :schema="schemaRef"
+    :schema="newSchema"
     @register="formRegister"
     @validate="onFormValidate"
   />

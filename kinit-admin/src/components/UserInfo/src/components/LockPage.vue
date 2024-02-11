@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { ElInput } from 'element-plus'
+import { ElInput, ElButton } from 'element-plus'
 import { useLockStore } from '@/store/modules/lock'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useNow } from '@/hooks/web/useNow'
 import { useDesign } from '@/hooks/web/useDesign'
 import { Icon } from '@/components/Icon'
-import { useAuthStore } from '@/store/modules/auth'
+import { useAuthStoreWithOut } from '@/store/modules/auth'
 
-const authStore = useAuthStore()
+const authStore = useAuthStoreWithOut()
 
 const password = ref('')
 const loading = ref(false)
@@ -92,7 +92,7 @@ function handleShowForm(show = false) {
             {{ t('lock.message') }}
           </span>
           <div :class="`${prefixCls}-entry__footer enter-x`">
-            <BaseButton
+            <ElButton
               type="primary"
               size="small"
               class="mt-2 mr-2 enter-x"
@@ -101,8 +101,8 @@ function handleShowForm(show = false) {
               @click="handleShowForm(true)"
             >
               {{ t('common.back') }}
-            </BaseButton>
-            <BaseButton
+            </ElButton>
+            <ElButton
               type="primary"
               size="small"
               class="mt-2 mr-2 enter-x"
@@ -111,8 +111,8 @@ function handleShowForm(show = false) {
               @click="goLogin"
             >
               {{ t('lock.backToLogin') }}
-            </BaseButton>
-            <BaseButton
+            </ElButton>
+            <ElButton
               type="primary"
               class="mt-2"
               size="small"
@@ -121,7 +121,7 @@ function handleShowForm(show = false) {
               :disabled="loading"
             >
               {{ t('lock.entrySystem') }}
-            </BaseButton>
+            </ElButton>
           </div>
         </div>
       </div>
@@ -190,7 +190,6 @@ function handleShowForm(show = false) {
         font-size: 90px;
       }
     }
-
     @media screen and (min-width: @screen-lg) {
       span:not(.meridiem) {
         font-size: 220px;
@@ -202,7 +201,6 @@ function handleShowForm(show = false) {
         font-size: 260px;
       }
     }
-
     @media screen and (min-width: @screen-2xl) {
       span:not(.meridiem) {
         font-size: 320px;

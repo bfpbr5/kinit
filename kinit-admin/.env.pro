@@ -1,8 +1,8 @@
 # 环境
-VITE_NODE_ENV=production
+NODE_ENV=production
 
-# 接口前缀，没用到
-# VITE_API_BASE_PATH=/api
+# 接口前缀
+VITE_API_BASE_PATH=pro
 
 # 打包路径
 VITE_BASE_PATH=/
@@ -21,15 +21,3 @@ VITE_OUT_DIR=dist-pro
 
 # 标题
 VITE_APP_TITLE=后台系统
-
-# 是否切割css
-VITE_USE_CSS_SPLIT=true
-
-# 是否使用在线图标
-VITE_USE_ONLINE_ICON=true
-
-# 是否包分析
-VITE_USE_BUNDLE_ANALYZER=true
-
-# 是否全量引入element-plus样式
-VITE_USE_ALL_ELEMENT_PLUS_STYLE=false

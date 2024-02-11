@@ -10,6 +10,7 @@ import {
   ElCheckbox,
   ElTable,
   ElTableColumn,
+  ElButton,
   ElMessage
 } from 'element-plus'
 import type { TableColumnCtx } from 'element-plus'
@@ -607,9 +608,9 @@ const getCronExample = () => {
         <ElTableColumn prop="minutes" label="分钟" align="center">
           <template #default="{ row, $index }">
             <ElInput v-if="$index === 0" v-model="row.minutes" @change="fieldToCron(row)" />
-            <BaseButton v-if="$index === 1" type="primary" link @click="cronToField">
+            <ElButton v-if="$index === 1" type="primary" link @click="cronToField">
               解析为字段
-            </BaseButton>
+            </ElButton>
           </template>
         </ElTableColumn>
         <ElTableColumn prop="hour" label="小时" align="center">
@@ -639,9 +640,9 @@ const getCronExample = () => {
         </ElTableColumn>
       </ElTable>
       <div class="mt-3 text-center">
-        <BaseButton type="primary" @click="getRunDatetime">获取最近十次运行时间</BaseButton>
-        <BaseButton type="primary" @click="validate">Cron 表达式验证</BaseButton>
-        <BaseButton type="primary" @click="getCronExample">Cron 表达式示例</BaseButton>
+        <ElButton type="primary" @click="getRunDatetime">获取最近十次运行时间</ElButton>
+        <ElButton type="primary" @click="validate">Cron 表达式验证</ElButton>
+        <ElButton type="primary" @click="getCronExample">Cron 表达式示例</ElButton>
       </div>
     </div>
   </div>

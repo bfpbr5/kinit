@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElTable, ElTableColumn, ElPopconfirm, ElMessage, ElTag } from 'element-plus'
+import { ElButton, ElTable, ElTableColumn, ElPopconfirm, ElMessage, ElTag } from 'element-plus'
 import { postUsersInitPasswordSendEmailApi } from '@/api/vadmin/auth/user'
 import { ref, PropType } from 'vue'
 
@@ -40,12 +40,12 @@ const initPassword = async () => {
   <div>
     <div class="flex justify-between">
       <span>已选用户列表</span>
-      <BaseButton
+      <ElButton
         type="primary"
         :disabled="tableData?.length === 0"
         :loading="loading"
         @click="initPassword"
-        >确认重置并发送邮件通知</BaseButton
+        >确认重置并发送邮件通知</ElButton
       >
     </div>
     <ElTable
@@ -86,8 +86,8 @@ const initPassword = async () => {
         <template #default="scope">
           <ElPopconfirm title="确认移除吗?" @confirm="handleDelete(scope.$index)">
             <template #reference>
-              <BaseButton v-if="scope.row.send_sms_status !== true" link type="primary" size="small"
-                >移除</BaseButton
+              <ElButton v-if="scope.row.send_sms_status !== true" link type="primary" size="small"
+                >移除</ElButton
               >
             </template>
           </ElPopconfirm>

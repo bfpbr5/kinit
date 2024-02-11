@@ -3,6 +3,7 @@ import {
   ElLink,
   ElRow,
   ElCol,
+  ElButton,
   ElTable,
   ElTableColumn,
   ElUpload,
@@ -129,21 +130,21 @@ const downloadErrorFile = async (row: Recordable) => {
             :disabled="tableData.length > 0"
           >
             <ElTooltip effect="dark" content="只支持上传XLSX文件" placement="top">
-              <BaseButton type="primary" size="small" :disabled="tableData.length > 0"
-                >上传文件</BaseButton
+              <ElButton type="primary" size="small" :disabled="tableData.length > 0"
+                >上传文件</ElButton
               >
             </ElTooltip>
           </ElUpload>
         </div>
       </ElCol>
       <ElCol :span="1.5">
-        <BaseButton
+        <ElButton
           type="primary"
           size="small"
           :disabled="tableData.length === 0"
           :loading="importLoading"
           @click="handleImport"
-          >确认导入</BaseButton
+          >确认导入</ElButton
         >
       </ElCol>
     </ElRow>
@@ -155,7 +156,7 @@ const downloadErrorFile = async (row: Recordable) => {
         <template #default>
           <ElPopconfirm title="确认删除吗?" @confirm="handleDelete">
             <template #reference>
-              <BaseButton link type="primary" size="small">删除</BaseButton>
+              <ElButton link type="primary" size="small">删除</ElButton>
             </template>
           </ElPopconfirm>
         </template>

@@ -22,7 +22,7 @@ services:
     container_name: kinit-admin
     restart: always
     ports:
-      - "80:80"
+      - "88:80"
     expose:
       - "80"
     image: nginx:latest
@@ -49,63 +49,74 @@ services:
       kinit_network:
         ipv4_address: "177.8.0.4"
 
-  kinit-redis:
-    container_name: kinit-redis
-    restart: always
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    expose:
-      - "6379"
-    volumes:
-      - ./docker_env/redis/conf/redis.conf:/etc/redis/redis.conf
-    environment:
-      TZ: "Asia/Shanghai"
-    networks:
-      kinit_network:
-        ipv4_address: "177.8.0.5"
-    command: redis-server /etc/redis/redis.conf
+  # kinit-redis:
+  #   container_name: kinit-redis
+  #   restart: always
+  #   image: redis:latest
+  #   ports:
+  #     - "6379:6379"
+  #   expose:
+  #     - "6379"
+  #   volumes:
+  #     - ./docker_env/redis/conf/redis.conf:/etc/redis/redis.conf
+  #   environment:
+  #     TZ: "Asia/Shanghai"
+  #   networks:
+  #     kinit_network:
+  #       ipv4_address: "177.8.0.5"
+  #   command: redis-server /etc/redis/redis.conf
 
-  kinit-mongo:
-    container_name: kinit-mongo
-    restart: always
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    expose:
-      - "27017"
-    volumes:
-      - ./docker_env/mongo/data:/data/db
-      - ./docker_env/mongo/log:/data/log
-      - ./docker_env/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js # 挂载初始化脚本
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin # root 用户名
-      MONGO_INITDB_ROOT_PASSWORD: 123456 # root 用户密码
-      TZ: "Asia/Shanghai" # 设置时区
-    networks:
-      kinit_network:
-        ipv4_address: "177.8.0.6"
-    command: mongod --auth --bind_ip 0.0.0.0 # 启用身份验证和允许从任何IP连接
+  # kinit-mongo:
+  #   container_name: kinit-mongo
+  #   restart: always
+  #   image: mongo:latest
+  #   ports:
+  #     - "27017:27017"
+  #   expose:
+  #     - "27017"
+  #   volumes:
+  #     - ./docker_env/mongo/data:/data/db
+  #     - ./docker_env/mongo/log:/data/log
+  #     - ./docker_env/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js # 挂载初始化脚本
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: admin # root 用户名
+  #     MONGO_INITDB_ROOT_PASSWORD: 123456 # root 用户密码
+  #     TZ: "Asia/Shanghai" # 设置时区
+  #   networks:
+  #     kinit_network:
+  #       ipv4_address: "177.8.0.6"
+  #   command: mongod --auth --bind_ip 0.0.0.0 # 启用身份验证和允许从任何IP连接
 
-  kinit-mysql:
-    container_name: kinit-mysql
-    restart: always
-    image: mysql:latest
-    ports:
-      - "3306:3306"
-    expose:
-      - "3306"
-    volumes:
-      - ./docker_env/mysql/conf:/etc/mysql/conf.d
-      - ./docker_env/mysql/data:/var/lib/mysql
-      - ./docker_env/mysql/logs:/logs
+  # kinit-mysql:
+  #   container_name: kinit-mysql
+  #   restart: always
+  #   image: mysql:latest
+  #   ports:
+  #     - "3306:3306"
+  #   expose:
+  #     - "3306"
+  #   volumes:
+  #     - ./docker_env/mysql/conf:/etc/mysql/conf.d
+  #     - ./docker_env/mysql/data:/var/lib/mysql
+  #     - ./docker_env/mysql/logs:/logs
+  #   environment:
+  #     TZ: "Asia/Shanghai"
+  #     MYSQL_ROOT_PASSWORD: "123456"
+  #     MYSQL_DATABASE: "kinit"
+  #   networks:
+  #     kinit_network:
+  #       ipv4_address: "177.8.0.7"
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: rma
     environment:
-      TZ: "Asia/Shanghai"
-      MYSQL_ROOT_PASSWORD: "123456"
-      MYSQL_DATABASE: "kinit"
-    networks:
-      kinit_network:
-        ipv4_address: "177.8.0.7"
+      PMA_HOST: 177.8.0.7
+      PMA_PORT: 3306
+    ports:
+      - "8888:80"
+    restart: always
 
 networks:
   kinit_network:

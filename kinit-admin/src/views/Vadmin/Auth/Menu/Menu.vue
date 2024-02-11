@@ -9,14 +9,13 @@ import {
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
-import { ElSwitch, ElRow, ElCol } from 'element-plus'
+import { ElButton, ElSwitch, ElRow, ElCol } from 'element-plus'
 import { Icon } from '@/components/Icon'
 import { ContentWrap } from '@/components/ContentWrap'
 import Write from './components/Write.vue'
 import { Dialog } from '@/components/Dialog'
 import { useDictStore } from '@/store/modules/dict'
 import { selectDictLabel, DictDetail } from '@/utils/dict'
-import { BaseButton } from '@/components/Button'
 
 defineOptions({
   name: 'AuthMenu'
@@ -123,7 +122,7 @@ const tableColumns = reactive<TableColumn[]>([
         const row = data.row
         return (
           <>
-            <ElSwitch modelValue={!row.noCache} disabled />
+            <ElSwitch value={!row.noCache} disabled />
           </>
         )
       }
@@ -139,7 +138,7 @@ const tableColumns = reactive<TableColumn[]>([
         const row = data.row
         return (
           <>
-            <ElSwitch modelValue={!row.hidden} disabled />
+            <ElSwitch value={!row.hidden} disabled />
           </>
         )
       }
@@ -155,7 +154,7 @@ const tableColumns = reactive<TableColumn[]>([
         const row = data.row
         return (
           <>
-            <ElSwitch modelValue={!row.disabled} disabled />
+            <ElSwitch value={!row.disabled} disabled />
           </>
         )
       }
@@ -174,7 +173,7 @@ const tableColumns = reactive<TableColumn[]>([
         const del = ['auth.menu.delete']
         return (
           <>
-            <BaseButton
+            <ElButton
               type="primary"
               v-hasPermi={update}
               link
@@ -182,8 +181,8 @@ const tableColumns = reactive<TableColumn[]>([
               onClick={() => editAction(row)}
             >
               编辑
-            </BaseButton>
-            <BaseButton
+            </ElButton>
+            <ElButton
               type="primary"
               v-hasPermi={add}
               link
@@ -191,8 +190,8 @@ const tableColumns = reactive<TableColumn[]>([
               onClick={() => addSonAction(row)}
             >
               添加子菜单
-            </BaseButton>
-            <BaseButton
+            </ElButton>
+            <ElButton
               type="danger"
               v-hasPermi={del}
               loading={delLoading.value}
@@ -201,7 +200,7 @@ const tableColumns = reactive<TableColumn[]>([
               onClick={() => delData(row)}
             >
               删除
-            </BaseButton>
+            </ElButton>
           </>
         )
       }
@@ -294,8 +293,8 @@ const save = async () => {
       <template #toolbar>
         <ElRow :gutter="10">
           <ElCol :span="1.5">
-            <BaseButton type="primary" v-hasPermi="['auth.menu.create']" @click="addAction"
-              >新增菜单</BaseButton
+            <ElButton type="primary" v-hasPermi="['auth.menu.create']" @click="addAction"
+              >新增菜单</ElButton
             >
           </ElCol>
         </ElRow>
@@ -307,15 +306,10 @@ const save = async () => {
     <Write ref="writeRef" :current-row="currentRow" :parent-id="parentId" />
 
     <template #footer>
-      <BaseButton
-        v-if="actionType !== 'detail'"
-        type="primary"
-        :loading="saveLoading"
-        @click="save"
-      >
+      <ElButton v-if="actionType !== 'detail'" type="primary" :loading="saveLoading" @click="save">
         {{ t('exampleDemo.save') }}
-      </BaseButton>
-      <BaseButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</BaseButton>
+      </ElButton>
+      <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>
     </template>
   </Dialog>
 </template>

@@ -1,0 +1,32 @@
+from pydantic import BaseModel
+from typing import Optional
+
+# 案例先例的基础模型定义
+class CasePrecedentBase(BaseModel):
+    case_id: int  # 关联案件的ID
+    description: Optional[str] = None  # 先例描述，可选字段
+    legal_basis: Optional[str] = None  # 法律依据，可选字段
+
+# 创建案例先例时使用的模型，继承自CasePrecedentBase
+class CasePrecedentCreate(CasePrecedentBase):
+    pass  # 创建案例先例时，使用与基础模型相同的字段
+
+# 更新案例先例时使用的模型，继承自CasePrecedentBase
+class CasePrecedentUpdate(CasePrecedentBase):
+    pass  # 更新案例先例时，使用与基础模型相同的字段
+
+# 数据库中案例先例的模型，包含先例ID，继承自CasePrecedentBase
+class CasePrecedentInDBBase(CasePrecedentBase):
+    precedent_id: int  # 先例ID
+
+    # 配置Pydantic模型以兼容ORM对象
+    class Config:
+        orm_mode = True
+
+# 完整的案例先例模型，用于API响应
+class CasePrecedent(CasePrecedentInDBBase):
+    pass  # 包括所有案例先例字段
+
+# 数据库内部使用的案例先例模型
+class CasePrecedentInDB(CasePrecedentInDBBase):
+    pass  # 用于与数据库交互的模型

@@ -24,8 +24,9 @@ app = APIRouter()
 #    接口测试
 ###########################################################
 @app.get("/test", summary="接口测试")
-async def test(auth: Auth = Depends(OpenAuth())):
-    return SuccessResponse(await crud.TestDal(auth.db).relationship_where_operations_has())
+async def test(auth: Auth = Depends(FullAdminAuth())):
+    print(auth)
+    return SuccessResponse()
 
 
 ###########################################################

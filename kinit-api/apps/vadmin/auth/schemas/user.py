@@ -15,7 +15,7 @@ from .dept import DeptSimpleOut
 
 
 class User(BaseModel):
-    name: str
+    name: str | None = None
     telephone: Telephone
     email: Email | None = None
     nickname: str | None = None
