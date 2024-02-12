@@ -107,7 +107,7 @@ export default {
     small: '小'
   },
   login: {
-    welcome: '欢迎使用本系统',
+    welcome: '讼策大模型',
     message: '开箱即用的中后台管理系统',
     username: '用户名',
     telephone: '手机号',
