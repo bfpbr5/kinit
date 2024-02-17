@@ -11,14 +11,14 @@ Mysql 数据库配置项
 连接引擎官方文档：https://www.osgeo.cn/sqlalchemy/core/engines.html
 数据库链接配置说明：mysql+asyncmy://数据库用户名:数据库密码@数据库地址:数据库端口/数据库名称
 """
-SQLALCHEMY_DATABASE_URL = "mysql+asyncmy://root:gdghAMDC940bff3863@177.8.0.7:3306/kinit"
+SQLALCHEMY_DATABASE_URL = "mysql+asyncmy://root:123456@177.8.0.7:3306/kinit"
 
 """
 Redis 数据库配置
 格式："redis://:密码@地址:端口/数据库名称"
 """
 REDIS_DB_ENABLE = True
-REDIS_DB_URL = "redis://:amdc940@177.8.0.5:6379/1"
+REDIS_DB_URL = "redis://:123456@177.8.0.5:6379/1"
 
 """
 MongoDB 数据库配置
@@ -26,7 +26,7 @@ MongoDB 数据库配置
 """
 MONGO_DB_ENABLE = True
 MONGO_DB_NAME = "kinit"
-MONGO_DB_URL = f"mongodb://kinit:gdghAMDC940bff3863@177.8.0.6:27017/?authSource={MONGO_DB_NAME}"
+MONGO_DB_URL = f"mongodb://kinit:123456@177.8.0.6:27017/?authSource={MONGO_DB_NAME}"
 
 
 """
@@ -39,10 +39,10 @@ yourEndpoint填写Bucket所在地域对应的Endpoint。以华东1（杭州）�
  *  [endpoint] {String}：bucket所在的区域， 默认oss-cn-hangzhou。
 """
 ALIYUN_OSS = {
-    "accessKeyId": "LTAI5tBjnmc7YFhxSam1rchX",
-    "accessKeySecret": "NfHQlba9FjsXwWo2wDj9YqdRg9r5hY",
-    "endpoint": "oss-cn-beijing.aliyuncs.com",
-    "bucket": "law-bff",
+    "accessKeyId": "accessKeyId",
+    "accessKeySecret": "accessKeySecret",
+    "endpoint": "endpoint",
+    "bucket": "bucket",
     "baseUrl": "baseUrl"
 }
 
@@ -51,4 +51,4 @@ ALIYUN_OSS = {
 文档：https://user.ip138.com/ip/doc
 """
 IP_PARSE_ENABLE = False
-IP_PARSE_TOKEN = "5b32e5b59acc9d7b29eef5b57c7283d0"
+IP_PARSE_TOKEN = "IP_PARSE_TOKEN"

@@ -21,10 +21,11 @@
 Kinit 是一套全部开源的快速开发平台，毫无保留给个人及企业免费使用。
 
 - 后端采用现代、快速（高性能） [FastAPI](https://fastapi.tiangolo.com/zh/) 异步框架 + 自动生成交互式API文档 + （强制类型约束）[Pydantic](https://docs.pydantic.dev/1.10/) + （高效率）[SQLAlchemy 2.0](https://docs.sqlalchemy.org/en/20/index.html)；
-- PC端采用 [vue-element-plus-admin 2.2.0](https://gitee.com/kailong110120130/vue-element-plus-admin) 、[Vue3](https://cn.vuejs.org/guide/introduction.html)、[Element Plus](https://element-plus.gitee.io/zh-CN/guide/design.html)、[TypeScript](https://www.tslang.cn/)等主流技术开发；
+- PC端采用 [vue-element-plus-admin](https://gitee.com/kailong110120130/vue-element-plus-admin) 、[Vue3](https://cn.vuejs.org/guide/introduction.html)、[Element Plus](https://element-plus.gitee.io/zh-CN/guide/design.html)、[TypeScript](https://www.tslang.cn/)等主流技术开发；
 - 移动端采用 [uni-app](https://uniapp.dcloud.net.cn/component/)，[Vue2](https://v2.cn.vuejs.org/v2/guide/)，[uView 2](https://www.uviewui.com/components/intro.html)为主要技术开发；
 - 后端加入 [Typer](https://typer.tiangolo.com/) 命令行应用，简单化数据初始化，数据表模型迁移等操作；
-- 已加入定时任务功能，采用 [APScheduler](https://github.com/agronholm/apscheduler) 定时任务框架 + [Redis](https://redis.io/)  消息队列 + [MongoDB](https://www.mongodb.com/) 持久存储；
+- 后端新加入根据配置的 ORM 模型，自动生成 CRUD 代码；
+- 定时任务功能，采用 [APScheduler](https://github.com/agronholm/apscheduler) 定时任务框架 + [Redis](https://redis.io/)  消息队列 + [MongoDB](https://www.mongodb.com/) 持久存储；
 - 权限认证使用[（哈希）密码和 JWT Bearer 令牌的 OAuth2](https://fastapi.tiangolo.com/zh/tutorial/security/oauth2-jwt/)，支持多终端认证系统。
 - 支持加载动态权限菜单，多方式轻松权限控制，按钮级别权限控制。
 - 已加入常见的 [MySQL](https://www.mysql.com/) + [MongoDB](https://www.mongodb.com/) + [Redis](https://redis.io/)  数据库异步操作。
@@ -42,6 +43,17 @@ Kinit 是一套全部开源的快速开发平台，毫无保留给个人及企�
 
 [小诺开源技术 (xiaonuo.vip)](https://www.xiaonuo.vip/)：国内首个国密前后端分离快速开发平台
 
+## 微信群
+
+提供一个技术交流群，现在还没什么人哈哈哈哈哈，真心希望大家能够加入，积极讨论，因为本项目中还没有详细使用文档（一直在欠着，我也挺不好意思的），所以大家加入后，也可以很方便的一起讨论在使用中遇到各种问题，也可以提一些你想加入的功能，让我们更近一点，欢迎大家的加入。
+
+<div align="center">
+    <p align="center">
+        <img src="https://ktianc.oss-cn-beijing.aliyuncs.com/resource/images/1707235200/1707297056nZRJ6yeg.jpg" height="500" alt="logo"/>
+    </p>
+</div>
+
+
 ## 在线体验
 
 PC端演示地址：https://kinit.ktianc.top
@@ -58,8 +70,70 @@ PC端演示地址：https://kinit.ktianc.top
 </div>
 
 
+管理员账户：
+
 - 账号：15020221010
 - 密码：kinit2022
+
+测试账户：
+
+- 账号：15020240125
+- 密码：test
+
+## 接口 CURD 代码自动生成
+
+1. 目前只支持生成接口代码
+2. 目前只支持使用脚本方式运行，后续会更新到页面操作
+3. 代码是根据手动配置的 ORM 模型来生成的，支持参数同步，比如默认值，是否为空...
+
+脚本文件地址：`scripts/crud_generate/main.py`
+
+
+
+该功能首先需要手动创建出 ORM 模型，然后会根据 ORM 模型依次创建代码，包括如下代码：
+
+1. schema 序列化代码
+
+   schema 文件名称会使用设置的 en_name 名称，如果文件已经存在会先执行删除，再创建。
+
+   schema 代码内容生成完成后，同时会将新创建的 class 在 `__init__.py` 文件中导入。
+
+2. dal 数据操作代码
+
+   dal 文件名称会使用默认的 `crud.py` 文件名称，目前不支持自定义。
+
+   如果 dal 文件已经存在，并且已经有代码内容，那么会将新的模型 dal class 追加到文件最后，并会合并文件内导入的 module。
+
+3. param 请求参数代码
+
+   param 文件名取名方式与 schema 一致。
+
+   会创建出默认最简的 param class。
+
+4. view 视图代码
+
+   view 文件名称同样会使用默认的 `view.py` 文件名称，目前不支持自定义。
+
+   如果 view 文件已经存在，与 dal 执行操作一致。
+
+
+
+脚本中目前有两个方法：
+
+```python
+if __name__ == '__main__':
+    from apps.vadmin.auth.models import VadminUser
+
+    crud = CrudGenerate(VadminUser, "用户", "user")
+    # 只打印代码，不执行创建写入
+    crud.generate_codes()
+    # 创建并写入代码
+    crud.main()
+```
+
+目前不会去检测已有的代码，比如 `UserDal` 已经存在，还是会继续添加的。
+
+B站 视频演示：https://www.bilibili.com/video/BV19e411a7zP/
 
 ## 源码地址
 
@@ -71,7 +145,9 @@ github地址：https://github.com/vvandk/kinit
 
 - [x] 菜单管理：配置系统菜单，操作权限，按钮权限标识、后端接口权限等。
 
-- [x] 角色管理：角色菜单权限分配。
+- [x] 部门管理：支持无限层级部门配置。
+
+- [x] 角色管理：角色菜单权限，角色部门权限分配。
 
 - [x] 用户管理：用户是系统操作者，该功能主要完成系统用户配置。
 
@@ -195,6 +271,7 @@ Redis (推荐使用最新稳定版)
    ```python
    # 安全警告: 不要在生产中打开调试运行!
    DEBUG = True # 如果当前为开发环境则改为 True，如果为生产环境则改为 False
+   ```
 
 3. 修改项目数据库配置信息
 
@@ -242,6 +319,7 @@ Redis (推荐使用最新稳定版)
    # 文档：https://user.ip138.com/ip/doc
    IP_PARSE_ENABLE = True
    IP_PARSE_TOKEN = "IP_PARSE_TOKEN"
+   ```
 
 4. 并在`alembic.ini`文件中配置数据库信息，用于数据库映射
 
@@ -413,7 +491,9 @@ pnpm run build:pro
       DEBUG = False # 生产环境应该改为 False
       ```
 
-3. 如果已有 Mysql 或者 Redis 或者 MongoDB 数据库，请修改如下内容，如果没有则不需要修改：
+3. （**如果没有安装数据库则不需要这一操作**）如果已有 Mysql 或者 Redis 或者 MongoDB 数据库，请执行以下操作：
+
+   请先在对应数据库中创建用户名以及数据库，并修改以下数据库连接改为已有的数据库连接
 
    1. 修改 API 端配置文件：
 
@@ -422,7 +502,7 @@ pnpm run build:pro
       ```python
       # Mysql 数据库配置项
       # 连接引擎官方文档：https://www.osgeo.cn/sqlalchemy/core/engines.html
-      # 数据库链接配置说明：mysql+asyncmy://数据库用户名:数据库密码@数据库地址:数据库端口/数据库名称
+      # 数据库连接配置说明：mysql+asyncmy://数据库用户名:数据库密码@数据库地址:数据库端口/数据库名称
       SQLALCHEMY_DATABASE_URL = "mysql+asyncmy://root:123456@177.8.0.7:3306/kinit"
       
       # Redis 数据库配置
@@ -438,9 +518,9 @@ pnpm run build:pro
       ```
       
    2. 修改定时任务配置文件
-   
+
       文件路径为：`kinit-task/application/config/production.py`
-   
+
       ```python
       # Redis 数据库配置
       # 与接口是同一个数据库
@@ -457,7 +537,7 @@ pnpm run build:pro
       ```
       
    3. 将已有的数据库在 `docker-compose.yml` 文件中注释
-   
+
 4. 配置阿里云 OSS 与 IP 解析接口地址（可选）
 
    文件路径：`kinit-api/application/config/production.py`
@@ -484,7 +564,7 @@ pnpm run build:pro
    IP_PARSE_ENABLE = False
    IP_PARSE_TOKEN = "IP_PARSE_TOKEN"
    ```
-   
+
 5. 前端项目打包：
 
    ```shell
@@ -623,20 +703,3 @@ docker-compose ps -a
 		<td><img src="https://k-typora.oss-cn-beijing.aliyuncs.com/kinit/1670077870240.jpg"/></td>
     </tr>
 </table>
-
-
-# 调用流程：
-从1-10为查询数据并显示到页面，7、8、9的__init__.py要引入所有模块中的类，
-## 登记表盘-工作台-待处理案件数为例
-1. 页面格式： kinit-admin/src/views/Dashboard/Workplace.
-   页面数据： D:\project\project_docker\kinit-dev\kinit-admin\src\locales\zh-CN.ts
-2. 定义调用方法： D:\project\project_docker\kinit-dev\kinit-admin\src\api\dashboard\workplace\index.ts 定义axios访问后端接口路由
-   定义调用参数 D:\project\project_docker\kinit-dev\kinit-admin\src\api\dashboard\workplace\types.ts
-3. 由路由得到模块目录路径：D:\project\project_docker\kinit-dev\kinit-api\application\urls.py
-4. 读写数据库获得数据 D:\project\project_docker\kinit-dev\kinit-api\apps\vadmin\workplace\views.py
-5. 业务逻辑：D:\project\project_docker\kinit-dev\kinit-api\apps\vadmin\workplace\crud.py
-6. 封装的通用数据库交互方法： D:\project\project_docker\kinit-dev\kinit-api\core\crud.py
-7. ORM数据表映射：D:\project\project_docker\kinit-dev\kinit-api\apps\vadmin\workplace\models\case_info.py
-8. 定义业务数据参数： D:\project\project_docker\kinit-dev\kinit-api\apps\vadmin\workplace\params\case_info_params.py
-9. 定义数据类型验证模型： D:\project\project_docker\kinit-dev\kinit-api\apps\vadmin\workplace\schemas\case_info.py
-10. 定义身份验证： D:\project\project_docker\kinit-dev\kinit-api\apps\vadmin\auth\utils\current.py

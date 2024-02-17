@@ -2,12 +2,8 @@ import request from '@/config/axios'
 import type { Project, Dynamic, Team, RadarData, Shortcuts } from './types'
 
 export const getProjectApi = (): Promise<IResponse<Project>> => {
-  return request.get({ url: '/vadmin/workplace/case_info' })
+  return request.get({ url: '/vadmin/workplace/project' })
 }
-
-// export const addProjectApi = (data: Project): Promise<IResponse> => {
-//   return request.post({ url: '/vadmin/workplace/case_info', data })
-// }
 
 export const getDynamicApi = (): Promise<IResponse<Dynamic[]>> => {
   return request.get({ url: '/vadmin/workplace/dynamic' })

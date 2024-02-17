@@ -5,9 +5,9 @@
 # @File           : main.py
 # @IDE            : PyCharm
 # @desc           : 简要说明
+
 import datetime
 import os.path
-
 from application.settings import BASE_DIR
 
 
@@ -52,33 +52,10 @@ class CreateApp:
             return
         os.makedirs(path)
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        init_file_content = '''
-        import pkgutil
-        import importlib
-
-        # 遍历当前目录中的所有模块
-        for loader, module_name, is_pkg in pkgutil.iter_modules(__path__):
-            # 跳过本文件（__init__.py）
-            if module_name == '__init__':
-                continue
-            # 导入模块
-            module = importlib.import_module('.' + module_name, __package__)
-            # 遍历模块中的所有属性
-            for attribute_name in dir(module):
-                # 获取属性的值（可能是一个类或其他对象）
-                attribute = getattr(module, attribute_name)
-                # 检查属性是否是一个类，并且确保它不是本模块中定义的
-                # 同时检查类名和限定名是否相同，以忽略嵌套的类
-                if (isinstance(attribute, type) and 
-                    attribute.__module__ == module.__name__ and 
-                    attribute.__name__ == attribute.__qualname__):
-                    # 将类导出到当前命名空间
-                    globals()[attribute_name] = attribute'''
         params = {
             "create_datetime": now,
             "filename": "__init__.py",
-            "desc": "初始化文件",
-            "content": init_file_content
+            "desc": "初始化文件"
         }
         self.create_file(os.path.join(path, "__init__.py"), "init.py", **params)
 
@@ -116,5 +93,3 @@ class CreateApp:
         template.close()
         return content
 
-# if __name__ == '__main__':
-#     CreateApp()

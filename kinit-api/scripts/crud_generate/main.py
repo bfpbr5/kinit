@@ -164,3 +164,9 @@ class CrudGenerate(GenerateBase):
             self.param_class_name
         )
         view.write_generate_code()
+
+
+if __name__ == '__main__':
+    from apps.case.models.case import Case
+    example = CrudGenerate(Case, zh_name="案件", en_name="case")
+    example.generate_codes()

@@ -50,6 +50,7 @@ export default {
     notSpace: '不能包含空格',
     notSpecialCharacters: '不能包含特殊字符',
     isEqual: '两次输入不一致',
+    setting: '设置',
     selectAll: '全选',
     SerialNumberColumn: '序号列'
   },
@@ -84,7 +85,7 @@ export default {
     sizeIcon: '尺寸图标',
     localeIcon: '多语言图标',
     tagsView: '标签页',
-    logo: '标志',
+    logo: 'Logo',
     greyMode: '灰色模式',
     fixedHeader: '固定头部',
     headerTheme: '头部主题',
@@ -107,8 +108,8 @@ export default {
     small: '小'
   },
   login: {
-    welcome: '讼策大模型',
-    message: '开箱即用的中后台管理系统',
+    welcome: '法律工作，可以更简单',
+    message: '您的一站式智能法务解决方案，轻松应对复杂的法律任务。',
     username: '用户名',
     telephone: '手机号',
     password: '密码',
@@ -185,7 +186,13 @@ export default {
     function: '功能',
     multipleTabs: '多开标签页',
     details: '详情页',
-    iconPicker: '图标选择器'
+    iconPicker: '图标选择器',
+    request: '请求',
+    waterfall: '瀑布流',
+    imageCropping: '图片裁剪',
+    videoPlayer: '视频播放器',
+    tableVideoPreview: '表格视频预览',
+    cardTable: '卡片表格'
   },
   permission: {
     hasPermission: '请设置操作权限值'
@@ -230,12 +237,11 @@ export default {
     goodMorning: '早安',
     happyDay: '祝你开心每一天!',
     toady: '今日晴',
-    project: '待处理案件数',
+    project: '项目数',
     access: '项目访问',
     toDo: '待办',
     introduction: '一个正经的简介',
     more: '更多',
-    add: '新增',
     shortcutOperation: '快捷操作',
     operation: '操作',
     index: '指数',
@@ -329,7 +335,8 @@ export default {
     customContent: '自定义内容',
     lazyLoad: '懒加载',
     upload: '上传',
-    userAvatar: '用户头像'
+    userAvatar: '用户头像',
+    iconPicker: '图标选择器'
   },
   guideDemo: {
     guide: '引导页',
@@ -456,7 +463,9 @@ export default {
     fixedHeaderOrAuto: '固定头部/自动',
     getSelections: '获取多选数据',
     preview: '封面',
-    showOrHiddenSortable: '显示/隐藏排序'
+    showOrHiddenSortable: '显示/隐藏排序',
+    videoPreview: '视频预览',
+    cardTable: '卡片表格'
   },
   richText: {
     richText: '富文本',
@@ -532,7 +541,7 @@ export default {
   menu: {
     menuName: '菜单名称',
     icon: '图标',
-    permission: '权限标识',
+    permission: '按钮权限',
     component: '组件',
     path: '路径',
     status: '状态',

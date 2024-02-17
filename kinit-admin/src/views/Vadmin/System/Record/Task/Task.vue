@@ -3,7 +3,6 @@ import { reactive, ref, unref } from 'vue'
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
-import { ElButton } from 'element-plus'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
@@ -13,6 +12,7 @@ import { selectDictLabel, DictDetail } from '@/utils/dict'
 import { useDictStore } from '@/store/modules/dict'
 import { useRouter } from 'vue-router'
 import { getTaskRecordListApi } from '@/api/vadmin/system/task'
+import { BaseButton } from '@/components/Button'
 
 defineOptions({
   name: 'SystemRecordTask'
@@ -119,7 +119,13 @@ const tableColumns = reactive<TableColumn[]>([
   {
     field: 'retval',
     label: '任务返回值',
-    show: true
+    show: true,
+    slots: {
+      default: (data: any) => {
+        const row = data.row
+        return JSON.parse(row.retval)
+      }
+    }
   },
   {
     field: 'exception',
@@ -144,9 +150,9 @@ const tableColumns = reactive<TableColumn[]>([
         const row = data.row
         return (
           <>
-            <ElButton type="primary" link size="small" onClick={() => view(row)}>
+            <BaseButton type="primary" link size="small" onClick={() => view(row)}>
               详情
-            </ElButton>
+            </BaseButton>
           </>
         )
       }
@@ -228,7 +234,7 @@ if (job_id) {
     <Detail v-if="actionType === 'detail'" :current-row="currentRow" />
 
     <template #footer>
-      <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>
+      <BaseButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</BaseButton>
     </template>
   </Dialog>
 </template>

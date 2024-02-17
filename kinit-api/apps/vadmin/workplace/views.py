@@ -1,16 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# JG_EDIT
-
-
+# @version        : 1.0
+# @Create Time    : 2022/10/19 15:41 
+# @File           : views.py
+# @IDE            : PyCharm
+# @desc           : 简要说明
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from core.database import db_getter
+from apps.vadmin.auth.utils.current import AllUserAuth
+from apps.vadmin.auth.utils.validation.auth import Auth
 from utils.response import SuccessResponse
-
 import datetime
-
+from apps.vadmin.record.crud import LoginRecordDal
 
 app = APIRouter()
 
@@ -18,77 +19,70 @@ app = APIRouter()
 ###########################################################
 #    工作区管理
 ###########################################################
-
-# ==================以下为旧代码=====================
-@app.get("/case_info", summary="获取案件列表")
+@app.get("/project", summary="获取项目")
 async def get_project():
     data = [
         {
-            "name": '租赁合同纠纷案',
-            "icon": 'https://www.shoudu888.com/attachment/images/law/level_1.png',
-            "message": '租客拖欠租金，房东要求解约索赔。',
-            "personal": 'Bushi',
+            "name": 'Mysql',
+            "icon": 'vscode-icons:file-type-mysql',
+            "message": '最流行的关系型数据库管理系统',
+            "personal": 'kinit',
             "link": "https://www.mysql.com/",
             "time": datetime.datetime.now().strftime("%Y-%m-%d")
         },
         {
-            "name": '离婚财产分割案',
-            "icon": 'https://www.shoudu888.com/attachment/images/law/level_2.png',
-            "message": '夫妻离婚，共同财产分割成焦点。',
-            "personal": 'Bushi',
+            "name": 'FastAPI',
+            "icon": 'simple-icons:fastapi',
+            "message": '一个现代、快速(高性能)的 web 框架',
+            "personal": 'kinit',
             "link": "https://fastapi.tiangolo.com/zh/",
             "time": datetime.datetime.now().strftime("%Y-%m-%d")
         },
         {
-            "name": '劳动合同纠纷案',
-            "icon": 'https://www.shoudu888.com/attachment/images/law/level_5.png',
-            "message": '员工索要加班费及年假工资。',
-            "personal": 'Bushi',
+            "name": 'Vue',
+            "icon": 'logos:vue',
+            "message": '渐进式 JavaScript 框架',
+            "personal": 'kinit',
             "link": "https://cn.vuejs.org/",
             "time": datetime.datetime.now().strftime("%Y-%m-%d")
         },
         {
-            "name": '交通事故损害赔偿案 ',
-            "icon": 'https://www.shoudu888.com/attachment/images/law/level_8.png',
-            "message": '行人车祸受伤，求偿医疗费等。',
-            "personal": 'Bushi',
+            "name": 'Element-plus',
+            "icon": 'logos:element',
+            "message": '面向设计师和开发者的组件库',
+            "personal": 'kinit',
             "link": "https://element-plus.org/zh-CN/",
             "time": datetime.datetime.now().strftime("%Y-%m-%d")
         },
         {
-            "name": '知识产权侵权案',
-            "icon": 'https://www.shoudu888.com/attachment/images/law/level_6.png',
-            "message": '软件著作权被侵犯，公司索赔。',
-            "personal": 'Bushi',
+            "name": 'Typescript',
+            "icon": 'vscode-icons:file-type-typescript-official',
+            "message": 'TypeScript是JavaScript类型的超集',
+            "personal": 'kinit',
             "link": "https://www.typescriptlang.org/",
             "time": datetime.datetime.now().strftime("%Y-%m-%d")
         },
         {
-            "name": '建设工程施工合同纠纷案',
-            "icon": 'https://www.shoudu888.com/attachment/images/law/level_1.png',
-            "message": '工程延期，质量差，引发诉讼。',
-            "personal": 'Bushi',
+            "name": 'Vite',
+            "icon": 'vscode-icons:file-type-vite',
+            "message": 'Vite 下一代的前端工具链',
+            "personal": 'kinit',
             "link": "https://cn.vitejs.dev/",
             "time": datetime.datetime.now().strftime("%Y-%m-%d")
         }
     ]
     return SuccessResponse(data)
-# ==================以上为旧代码=====================
-
-@app.get("/case_info/add/view/number/{data_id}", summary="更新常见案件查看次数+1")
-async def issue_add_view_number(data_id: int, db: AsyncSession = Depends(db_getter)):
-    return SuccessResponse(await crud.IssueDal(db).add_view_number(data_id))
 
 
 @app.get("/dynamic", summary="获取动态")
 async def get_dynamic():
     data = [
         {
-            "keys": ['受理', 'XXX离婚财产分割案'],
+            "keys": ['workplace.push', 'Github'],
             "time": datetime.datetime.now().strftime("%Y-%m-%d")
         },
         {
-            "keys": ['调解', '知识产权侵权案'],
+            "keys": ['workplace.push', 'Github'],
             "time": datetime.datetime.now().strftime("%Y-%m-%d")
         }
     ]
@@ -99,27 +93,27 @@ async def get_dynamic():
 async def get_team():
     data = [
         {
-            "name": '张伟律师',
+            "name": 'Mysql',
             "icon": 'vscode-icons:file-type-mysql'
         },
         {
-            "name": '刘毅律师',
+            "name": 'Vue',
             "icon": 'logos:vue'
         },
         {
-            "name": '王力宏律师',
+            "name": 'Element-plus',
             "icon": 'logos:element'
         },
         {
-            "name": '齐春雷律师',
+            "name": 'Fastapi',
             "icon": 'simple-icons:fastapi'
         },
         {
-            "name": '韦铭律师',
+            "name": 'Typescript',
             "icon": 'vscode-icons:file-type-typescript-official'
         },
         {
-            "name": '李杭律师',
+            "name": 'Vite',
             "icon": 'vscode-icons:file-type-vite'
         }
     ]
@@ -130,28 +124,28 @@ async def get_team():
 async def get_shortcuts():
     data = [
         {
-            "name": "中国裁判文书网",
-            "link": "https://wenshu.court.gov.cn/"
+            "name": "前端文档",
+            "link": "https://element-plus-admin-doc.cn/"
         },
         {
-            "name": "中国司法案例网",
-            "link": "https://anli.court.gov.cn/"
+            "name": "Swagger UI 接口文档",
+            "link": "http://kinit.ktianc.top/api/docs"
         },
         {
-            "name": "中国市场监管行政处罚文书网",
-            "link": "http://cfws.samr.gov.cn/"
+            "name": "Redoc 接口文档",
+            "link": "http://kinit.ktianc.top/api/redoc"
         },
         {
-            "name": "中国审判流程信息公开网",
-            "link": "https://splcgk.court.gov.cn/"
+            "name": "Windi CSS 文档",
+            "link": "https://cn.windicss.org/guide/"
         },
         {
-            "name": "中国庭审公开网",
-            "link": "http://tingshen.court.gov.cn/"
+            "name": "Iconify 文档",
+            "link": "https://icon-sets.iconify.design/"
         },
         {
-            "name": "信用中国",
-            "link": "https://www.creditchina.gov.cn/"
+            "name": "echarts 文档",
+            "link": "https://echarts.apache.org/zh/index.html"
         },
     ]
     return SuccessResponse(data)
